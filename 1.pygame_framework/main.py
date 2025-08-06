@@ -10,6 +10,10 @@ screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("红色五角星")
 
+# 创建Clock对象用于控制帧率
+clock = pygame.time.Clock()
+FPS = 60  # 设置目标帧率为60FPS
+
 # 五角星的属性
 star_color = (255, 0, 0)  # 红色 (RGB)
 star_center = (screen_width // 2, screen_height // 2)  # 屏幕中心
@@ -51,6 +55,9 @@ while running:
     
     # 更新屏幕显示
     pygame.display.flip()
+    
+    # 控制帧率，确保循环每秒不超过FPS次
+    clock.tick(FPS)
 
 # 退出 Pygame
 pygame.quit()
