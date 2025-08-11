@@ -79,6 +79,9 @@ class Game:
         pygame.display.set_caption(title)
         self.clock = pygame.time.Clock()
         self.bg_color = (255, 255, 255)
+        self.game_state = "RUNNING"  # RUNNING/GAME_OVER
+        self.score = 0
+        self.font = pygame.font.SysFont(None, 55)
 
         # 初始化贪吃蛇
         self.snake = Snake()
@@ -91,33 +94,33 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return False
+                # 处理重新开始
+                elif event.key == pygame.K_r and self.game_state == "GAME_OVER":
+                    self.__init__()  # 重置游戏
+                    return True
                 # 处理方向键输入
-                elif event.key == pygame.K_UP:
+                elif event.key == pygame.K_UP and self.game_state == "RUNNING":
                     self.snake.change_direction((0, -1))  # 上
-                elif event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_DOWN and self.game_state == "RUNNING":
                     self.snake.change_direction((0, 1))   # 下
-                elif event.key == pygame.K_LEFT:
+                elif event.key == pygame.K_LEFT and self.game_state == "RUNNING":
                     self.snake.change_direction((-1, 0))  # 左
-                elif event.key == pygame.K_RIGHT:
+                elif event.key == pygame.K_RIGHT and self.game_state == "RUNNING":
                     self.snake.change_direction((1, 0))   # 右
         return True
 
     
     def update(self):
-        """更新游戏状态（此处可添加控制逻辑）"""
-        # 检查蛇是否死亡
+        """更新游戏状态"""
+        if self.game_state == "GAME_OVER":
+            return
+            
         if self.snake.dead():
-            # 游戏结束处理
-            # 屏幕显示game over，显示分数
-            font = pygame.font.SysFont(None, 55)
-            text = font.render(f"Game Over, score: {len(self.snake.body) - 1}", True, (255, 0, 0))
-            self.screen.blit(text, (self.screen.get_width() // 2 - text.get_width() // 2, self.screen.get_height() // 2 - text.get_height() // 2))
-            pygame.display.flip()
-            # pygame.time.wait(1000)
+            self.score = len(self.snake.body) - 1
+            self.game_state = "GAME_OVER"
             return
 
         # 移动蛇
-        
         self.snake.move()
         if self.snake.body[0] == self.snake.food_position:
             self.snake.body.append(self.snake.body[-1])
@@ -127,12 +130,19 @@ class Game:
 
     def render(self):
         """渲染游戏画面"""
-        self.screen.fill(self.bg_color)        
-        # 绘画snake和食物
-        for segment in self.snake.body:
-            pygame.draw.rect(self.screen, self.snake.body_color, (segment[0] * self.snake.tile_size, segment[1] * self.snake.tile_size, self.snake.tile_size, self.snake.tile_size))
-        pygame.draw.rect(self.screen, self.snake.food_color, (self.snake.food_position[0] * self.snake.tile_size, self.snake.food_position[1] * self.snake.tile_size, self.snake.tile_size, self.snake.tile_size), 2)
-        print(f"Food position: {self.snake.food_position}")
+        self.screen.fill(self.bg_color)
+        
+        if self.game_state == "RUNNING":
+            # 绘画snake和食物
+            for segment in self.snake.body:
+                pygame.draw.rect(self.screen, self.snake.body_color, (segment[0] * self.snake.tile_size, segment[1] * self.snake.tile_size, self.snake.tile_size, self.snake.tile_size))
+            pygame.draw.rect(self.screen, self.snake.food_color, (self.snake.food_position[0] * self.snake.tile_size, self.snake.food_position[1] * self.snake.tile_size, self.snake.tile_size, self.snake.tile_size), 2)
+        else:
+            # 游戏结束画面
+            text = self.font.render(f"Game Over! Score: {self.score}", True, (255, 0, 0))
+            restart = self.font.render("Press R to restart", True, (255, 255, 255))
+            self.screen.blit(text, (self.screen.get_width() // 2 - text.get_width() // 2, self.screen.get_height() // 2 - 50))
+            self.screen.blit(restart, (self.screen.get_width() // 2 - restart.get_width() // 2, self.screen.get_height() // 2 + 50))
 
         pygame.display.flip()
     
