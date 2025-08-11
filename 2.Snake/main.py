@@ -37,15 +37,23 @@ class Snake:
             if (x,y) not in self.body:  # 确保位置不在蛇身上
                 return (x,y)
 
-        
-        
     def move(self):
         # 移动蛇身
         new_head = (self.body[0][0] + self.direction[0], self.body[0][1] + self.direction[1])
         self.body.insert(0, new_head)
         self.body.pop()
 
-    
+    def dead(self):
+        """判断蛇是否死亡"""
+        head_x, head_y = self.body[0]
+        # 撞墙
+        if head_x < 0 or head_x >= self.map_size[0] or head_y < 0 or head_y >= self.map_size[1]:
+            return True
+        # 撞自己
+        if self.body[0] in self.body[2:]:
+            # print(f"Snake position: {self.body}")
+            return True
+        return False
 
 
 
@@ -85,11 +93,26 @@ class Game:
     
     def update(self):
         """更新游戏状态（此处可添加控制逻辑）"""
+        # 检查蛇是否死亡
+        if self.snake.dead():
+            # 游戏结束处理
+            # 屏幕显示game over，显示分数
+            font = pygame.font.SysFont(None, 55)
+            text = font.render(f"Game Over, score: {len(self.snake.body) - 1}", True, (255, 0, 0))
+            self.screen.blit(text, (self.screen.get_width() // 2 - text.get_width() // 2, self.screen.get_height() // 2 - text.get_height() // 2))
+            pygame.display.flip()
+            pygame.time.wait(1000)
+            return
+
+        # 移动蛇
+        
         self.snake.move()
         if self.snake.body[0] == self.snake.food_position:
             self.snake.body.append(self.snake.body[-1])
             self.snake.food_position = self.snake.spawn_food()
-    
+
+
+
     def render(self):
         """渲染游戏画面"""
         self.screen.fill(self.bg_color)        
