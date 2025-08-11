@@ -26,14 +26,17 @@ class Snake:
         while True:
             x = random.randint(1, self.map_size[0] - 2) 
             y = random.randint(1, self.map_size[1] - 2) 
+            print(f"head_position: ({x}, {y})")
             return (x, y)
 
     def spawn_food(self):
-        """生成食物，读取map如果位置为0则生成食物"""
+        """生成不在蛇身上的食物位置"""
         while True:
-            x = random.randint(0, self.map_size[0] - 1) 
-            y = random.randint(0, self.map_size[1] - 1) 
-            return (x, y)
+            x = random.randint(0, self.map_size[0]-1)
+            y = random.randint(0, self.map_size[1]-1)
+            if (x,y) not in self.body:  # 确保位置不在蛇身上
+                return (x,y)
+
         
         
     def move(self):
@@ -56,25 +59,46 @@ class Game:
         pygame.display.set_caption(title)
         self.clock = pygame.time.Clock()
         self.bg_color = (255, 255, 255)
+
+        # 初始化贪吃蛇
+        self.snake = Snake()
+        
     
     def handle_events(self):
-        """处理系统事件"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return False
+                # 处理方向键输入
+                elif event.key == pygame.K_UP and self.snake.direction != (0, 1):
+                    self.snake.direction = (0, -1)  # 上
+                elif event.key == pygame.K_DOWN and self.snake.direction != (0, -1):
+                    self.snake.direction = (0, 1)   # 下
+                elif event.key == pygame.K_LEFT and self.snake.direction != (1, 0):
+                    self.snake.direction = (-1, 0)  # 左
+                elif event.key == pygame.K_RIGHT and self.snake.direction != (-1, 0):
+                    self.snake.direction = (1, 0)   # 右
         return True
+
     
     def update(self):
-        """更新游戏状态（此处可添加动画逻辑）"""
-        
-        pass
+        """更新游戏状态（此处可添加控制逻辑）"""
+        self.snake.move()
+        if self.snake.body[0] == self.snake.food_position:
+            self.snake.body.append(self.snake.body[-1])
+            self.snake.food_position = self.snake.spawn_food()
     
     def render(self):
         """渲染游戏画面"""
-        self.screen.fill(self.bg_color)
+        self.screen.fill(self.bg_color)        
+        # 绘画snake和食物
+        for segment in self.snake.body:
+            pygame.draw.rect(self.screen, self.snake.body_color, (segment[0] * self.snake.tile_size, segment[1] * self.snake.tile_size, self.snake.tile_size, self.snake.tile_size))
+        pygame.draw.rect(self.screen, self.snake.food_color, (self.snake.food_position[0] * self.snake.tile_size, self.snake.food_position[1] * self.snake.tile_size, self.snake.tile_size, self.snake.tile_size), 2)
+        print(f"Food position: {self.snake.food_position}")
+
         pygame.display.flip()
     
     def run(self):
@@ -84,7 +108,7 @@ class Game:
             running = self.handle_events()
             self.update()
             self.render()
-            self.clock.tick(60)
+            self.clock.tick(5)
         
         pygame.quit()
         sys.exit()
