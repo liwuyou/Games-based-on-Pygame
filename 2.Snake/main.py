@@ -6,9 +6,9 @@ import random
 class Snake:
     def __init__(self):
         """初始化地图"""
-        self.map_size = [40, 30] # 地图大小
+        self.map_size = [80, 60] # 地图大小
         self.map = [[0 for _ in range(self.map_size[0])] for _ in range(self.map_size[1])] # 二维数组存储位置
-        self.tile_size = 20 # 每个格子的大小
+        self.tile_size = 10 # 每个格子的大小
         self.map_color = (200, 200, 200)  # 地图颜色
         self.food_color = (255, 0, 0)  # 食物颜色
         self.food_position = self.spawn_food()
@@ -19,8 +19,6 @@ class Snake:
         self.head_position = self.spawn_head()  # 蛇头位置
         self.body = [self.head_position]
         self.direction = (1, 0)  # 初始方向向右
-
-
 
 
     def spawn_head(self):
@@ -43,6 +41,8 @@ class Snake:
         new_head = (self.body[0][0] + self.direction[0], self.body[0][1] + self.direction[1])
         self.body.insert(0, new_head)
         self.body.pop()
+
+    
 
 
 
@@ -69,6 +69,7 @@ class Game:
     
     def update(self):
         """更新游戏状态（此处可添加动画逻辑）"""
+        
         pass
     
     def render(self):
