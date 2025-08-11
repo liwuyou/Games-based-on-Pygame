@@ -11,6 +11,7 @@ class Snake:
         self.tile_size = 10 # 每个格子的大小
         self.map_color = (200, 200, 200)  # 地图颜色
         self.food_color = (255, 0, 0)  # 食物颜色
+        self.next_directions = []  # 方向缓冲队列
         
 
         # 初始化蛇的属性
@@ -37,7 +38,18 @@ class Snake:
             if (x,y) not in self.body:  # 确保位置不在蛇身上
                 return (x,y)
 
+    def change_direction(self, new_dir):
+        self.next_directions = [new_dir]
+        """改变方向，加入缓冲队列"""
+        # 防止180度转向
+        if (new_dir[0] != -self.direction[0] or new_dir[1] != -self.direction[1]):
+            if len(self.next_directions) < 2:  # 限制队列长度
+                self.next_directions.append(new_dir)
+
     def move(self):
+        # 优先使用缓冲方向
+        if self.next_directions:
+            self.direction = self.next_directions.pop(0)
         # 移动蛇身
         new_head = (self.body[0][0] + self.direction[0], self.body[0][1] + self.direction[1])
         self.body.insert(0, new_head)
@@ -80,14 +92,14 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     return False
                 # 处理方向键输入
-                elif event.key == pygame.K_UP and self.snake.direction != (0, 1):
-                    self.snake.direction = (0, -1)  # 上
-                elif event.key == pygame.K_DOWN and self.snake.direction != (0, -1):
-                    self.snake.direction = (0, 1)   # 下
-                elif event.key == pygame.K_LEFT and self.snake.direction != (1, 0):
-                    self.snake.direction = (-1, 0)  # 左
-                elif event.key == pygame.K_RIGHT and self.snake.direction != (-1, 0):
-                    self.snake.direction = (1, 0)   # 右
+                elif event.key == pygame.K_UP:
+                    self.snake.change_direction((0, -1))  # 上
+                elif event.key == pygame.K_DOWN:
+                    self.snake.change_direction((0, 1))   # 下
+                elif event.key == pygame.K_LEFT:
+                    self.snake.change_direction((-1, 0))  # 左
+                elif event.key == pygame.K_RIGHT:
+                    self.snake.change_direction((1, 0))   # 右
         return True
 
     
@@ -101,7 +113,7 @@ class Game:
             text = font.render(f"Game Over, score: {len(self.snake.body) - 1}", True, (255, 0, 0))
             self.screen.blit(text, (self.screen.get_width() // 2 - text.get_width() // 2, self.screen.get_height() // 2 - text.get_height() // 2))
             pygame.display.flip()
-            pygame.time.wait(1000)
+            # pygame.time.wait(1000)
             return
 
         # 移动蛇
