@@ -11,7 +11,7 @@ class Snake:
         self.tile_size = 10 # 每个格子的大小
         self.map_color = (200, 200, 200)  # 地图颜色
         self.food_color = (255, 0, 0)  # 食物颜色
-        self.food_position = self.spawn_food()
+        
 
         # 初始化蛇的属性
         self.body_color = (0, 255, 0)  # 蛇身颜色
@@ -19,7 +19,7 @@ class Snake:
         self.head_position = self.spawn_head()  # 蛇头位置
         self.body = [self.head_position]
         self.direction = (1, 0)  # 初始方向向右
-
+        self.food_position = self.spawn_food()   # 生成食物
 
     def spawn_head(self):
         """生成蛇头位置,不允许在地图边界两行处"""
@@ -108,7 +108,7 @@ class Game:
             running = self.handle_events()
             self.update()
             self.render()
-            self.clock.tick(5)
+            self.clock.tick(10)
         
         pygame.quit()
         sys.exit()
