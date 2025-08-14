@@ -15,15 +15,16 @@ meter: 3/4  # 节拍 3/4拍
 # 简谱按小节分组，每一组代表一段旋律（这里按原谱呈现的分段逻辑，可根据实际重新划分）
 # C D E F G A B
 # 1 2 3 4 5 6 7
+# A,表示在A的基础上降8度，A'表示升8度。A,,表示降两个8度，A'''表示升三个8度。
+# 0表示休止符
 
 sections: |
   C/ D/ | E/ C/ G· E/ | D G D | 
-  C/ bA/ E· C/ | B - B | 
-  A B C/ D/ bG C D/ E/ | 
+  C/ A,/ E· C/ | B, - B, | 
+  A, B, C/ D/ | G, C D/ E/ | 
   F F/ E/ D/ C/ | D - C/ D/ | 
   E/ C/ G· E/ | D G D | 
-  C/ bA/ bA bB/ C/ bG - 0/ bG/ | 
-  bA bB C/ D/ | bG C D/ E/ | 
+  C/ A,/ A, B,/ C/ | G, - 0/ G,/ | 
+  A, B, C/ D/ | G, C D/ E/ | 
   F F/ E/ D/ C/ | C - -
-    
 

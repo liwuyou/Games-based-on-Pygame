@@ -1,6 +1,7 @@
 import numpy as np
 import pyaudio
 import yaml
+import time
 
 
 class PianoPlayer:
@@ -33,13 +34,24 @@ class PianoPlayer:
 
 
 class PianoMusic:
-    # 音符频率映射 (C4-B4)
+    # 音符频率映射 (以A4=440Hz为基准)
     NOTE_FREQS = {
         'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13,
         'E': 329.63, 'F': 349.23, 'F#': 369.99, 'G': 392.00,
         'G#': 415.30, 'A': 440.00, 'A#': 466.16, 'B': 493.88,
         'bB': 466.16, 'bA': 415.30, 'bG': 392.00, 'bE': 311.13
     }
+    
+    def get_note_freq(self, note_name):
+        """根据音符名称获取频率，处理八度变化"""
+        base_note = note_name.rstrip(",'")  # 移除所有八度标记
+        octave_shift = note_name.count("'") - note_name.count(",")
+        
+        # 获取基准频率
+        freq = self.NOTE_FREQS.get(base_note, 440.0)  # 默认A4
+        
+        # 应用八度变化 (每八度频率翻倍/减半)
+        return freq * (2 ** octave_shift)
 
     def __init__(self):
         self.sheet_music = None
@@ -68,11 +80,18 @@ class PianoMusic:
             for note in notes:
                 if note == '-':  # 延音
                     self.parsed_notes.append(('rest', 0, base_duration))
-                elif note == '0':  # 休止符
-                    self.parsed_notes.append(('rest', 0, base_duration/2))
+                elif note.startswith('0'):  # 处理0/或0//等休止符
+                    duration = base_duration
+                    if '/' in note:  # 八分休止符
+                        duration = base_duration / 2
+                    if '//' in note:  # 十六分休止符
+                        duration = base_duration / 4
+                    if '.' in note:  # 附点休止符
+                        duration *= 1.5
+                    self.parsed_notes.append(('rest', 0, duration))
                 else:
                     # 解析音符和时值
-                    note_name = ''.join(filter(str.isalpha, note))
+                    note_name = ''.join([c for c in note if c.isalpha() or c in (',', "'")])
                     duration = base_duration
                     
                     if '/' in note:  # 八分音符
@@ -82,7 +101,7 @@ class PianoMusic:
                     if '.' in note:  # 附点音符
                         duration *= 1.5
                     
-                    freq = self.NOTE_FREQS.get(note_name, 440)  # 默认A4
+                    freq = self.get_note_freq(note_name)  # 处理八度变化
                     self.parsed_notes.append(('note', freq, duration))
         return True
 
