@@ -1,0 +1,29 @@
+title: 千与千寻
+subtitle: 输入副标题
+composer: 木村弓
+arranger: 孙世彦
+tempo: 100  # 速度，=100
+key: C      # 调号 1=C
+meter: 3/4  # 节拍 3/4拍
+
+# 升降调：用 # 表示升调（如 #C），用 b 表示降调（如 bB）
+# 音符时长：
+# 四分音符：直接写数字（如 C）
+# 八分音符：数字后加 /（如 C/）
+# 十六分音符：数字后加 //（如 C//）
+# 附点音符：数字后加 .（如 C. 表示附点四分音符，C/. 表示附点八分音符）
+# 简谱按小节分组，每一组代表一段旋律（这里按原谱呈现的分段逻辑，可根据实际重新划分）
+# C D E F G A B
+# 1 2 3 4 5 6 7
+
+sections: |
+  C/ D/ | E/ C/ G· E/ | D G D | 
+  C/ bA/ E· C/ | B - B | 
+  A B C/ D/ bG C D/ E/ | 
+  F F/ E/ D/ C/ | D - C/ D/ | 
+  E/ C/ G· E/ | D G D | 
+  C/ bA/ bA bB/ C/ bG - 0/ bG/ | 
+  bA bB C/ D/ | bG C D/ E/ | 
+  F F/ E/ D/ C/ | C - -
+    
+

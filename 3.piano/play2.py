@@ -31,6 +31,7 @@ sine_wave2 = generate_sine_wave(500.0, DURATION, SAMPLE_RATE)
 
 stream.write(sine_wave.astype(np.float32).tobytes())
 stream.write(sine_wave2.astype(np.float32).tobytes())
+
 # 关闭流和PyAudio
 stream.stop_stream()
 stream.close()
