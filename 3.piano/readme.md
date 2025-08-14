@@ -12,3 +12,7 @@ play2.py的import pyaudio，没有问题，nice,用这个
 
 测试谱子
 ![20250814123301](https://liwuyou66.oss-cn-beijing.aliyuncs.com/img/20250814123301.png)
+
+## V1.2 piano
+问题1，爆音
+问题2，会黏音，如"C/ A,/ A, B,",两个A的音就黏在一起了

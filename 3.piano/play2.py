@@ -28,9 +28,11 @@ stream = p.open(
 print(f"正在播放 {FREQUENCY}Hz 的正弦波...")
 sine_wave = generate_sine_wave(FREQUENCY, DURATION, SAMPLE_RATE)
 sine_wave2 = generate_sine_wave(500.0, DURATION, SAMPLE_RATE)
+sine_wave3 = generate_sine_wave(300.0, DURATION, SAMPLE_RATE)
 
 stream.write(sine_wave.astype(np.float32).tobytes())
 stream.write(sine_wave2.astype(np.float32).tobytes())
+stream.write(sine_wave3.astype(np.float32).tobytes())
 
 # 关闭流和PyAudio
 stream.stop_stream()
