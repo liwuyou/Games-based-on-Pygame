@@ -6,8 +6,8 @@ import time
 
 class PianoPlayer:
     def __init__(self, SAMPLE_RATE=44100):
-
         self.SAMPLE_RATE = SAMPLE_RATE  # 采样率（Hz）
+        self.FADE_DURATION = 0.02  # 20ms淡入淡出
         self.p = pyaudio.PyAudio()
 
         # 打开音频流
@@ -18,10 +18,18 @@ class PianoPlayer:
             output=True
         )
 
+    def apply_fade(self, wave):
+        fade_samples = int(self.FADE_DURATION * self.SAMPLE_RATE)
+        fade_in = np.linspace(0, 1, fade_samples)
+        fade_out = np.linspace(1, 0, fade_samples)
+        wave[:fade_samples] *= fade_in
+        wave[-fade_samples:] *= fade_out
+        return wave
+
     def generate_sine_wave(self, freq, duration, sample_rate):
         t = np.linspace(0, duration, int(sample_rate * duration), False)
-        wave = np.sin(2 * np.pi * freq * t)
-        return wave  # 返回音频的波形数据numpy,需要转化
+        wave = np.sin(2 * np.pi * freq * t) * 0.3  # 降低音量
+        return self.apply_fade(wave)  # 应用淡入淡出
 
     def play_tone(self, frequency, duration):
         sine_wave = self.generate_sine_wave(frequency, duration, self.SAMPLE_RATE)
